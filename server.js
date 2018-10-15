@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const parsingContent = require('./parsingContent');
-let port = process.env.PORT;
+let port = 3000;
 
 function onRequest(req, res){    
     parsingContent.event((subject, link)=>{
