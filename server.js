@@ -30,8 +30,8 @@ function allRequest(req, res){
 app.get('/', loadPage.main);
 app.get('/test', onRequest);
 app.get('/json', allRequest);
-app.listen(port, function(){
-   console.log('Listening on port ' + port); 
+app.listen(port, ()=>{
+   console.log('Listening on port ' + port + '\n'); 
 });
 
 //https://warframestat.us/
