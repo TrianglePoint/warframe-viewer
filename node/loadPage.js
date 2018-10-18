@@ -10,7 +10,7 @@ function load_main(req, res){
         
         const $ = cheerio.load(data);
         parsingContent.events((result)=>{
-            $('#div01').html(result);
+            $('#div_events').html(result);
             res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
             console.log($.html());
             res.write($.html());
