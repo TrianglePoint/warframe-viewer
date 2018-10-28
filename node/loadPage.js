@@ -14,7 +14,7 @@ function load_main(req, res){
     fs.readFile('./web/html/main.html', (err, body) => {
         if(err) throw err;
         
-        $ = cheerio.load(body);
+        $ = cheerio.load(body,{xmlMode: true});
         parsingContent.events((result)=>{
             $('#div_events').html(result);
             count--;
