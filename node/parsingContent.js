@@ -1,10 +1,8 @@
-const url = require('url');
-
 const crawlingContent = require('./crawlingContent');
 
 const url_link = {
     json: 'http://content.warframe.com/dynamic/worldState.php',
-    forum: 'https://forums.warframe.com/forum/3-pc-update-build-notes/'
+    forum: 'https://forums.warframe.com/forum/3-pc-update-build-notes.xml/'
 };
 
 function parse_events(callback){
@@ -48,25 +46,20 @@ function parse_events(callback){
 
 function parse_update(cheerio, callback){
     crawlingContent(url_link.forum, (body)=>{
-        const $ = cheerio.load(body);
+        const $ = cheerio.load(body,{xmlMode: true});
         let result = "";
-        
         // Number of display.
         let numUpdate = 5;
         console.log('--parsingContent: Number of find the update: ' + numUpdate);
-        const link = $('a', $('span.ipsContained'), $('ol.ipsDataList'));
+        const link = $('item');
         
         link.each(function(index, elem){
             if(numUpdate == 0){    
                 // End loop of .each()
                 return false;
             }
-
-            // If update post? (not 'go to page 1, 2, 3')
-            if(url.parse(elem.attribs.href).search == null){
-                result += '<p><a href="' + elem.attribs.href + '" target="_blank">' + elem.attribs.title + '</a></p>';
-                numUpdate--;
-            }
+            result += '<p><a href="' + $('link', this).text() + '" target="_blank">' + $('title', this).text() + '</a></p>';
+            numUpdate--;
         });
         console.log('--parsingContent: Created update element.');
         return callback(result);
@@ -75,13 +68,5 @@ function parse_update(cheerio, callback){
 
 module.exports = {
     events: parse_events,
-    update: parse_update,
-    
-    // below is temp.
-    all: (callback)=>{
-        loadContent((data)=>{
-            let obj = JSON.parse(data);
-            return callback(obj);
-        });
-    }
+    update: parse_update
 };
