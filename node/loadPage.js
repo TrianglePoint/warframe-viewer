@@ -34,7 +34,7 @@ function add_to_html(res){
         res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
         res.write($.html());
         res.end();
-        console.log('-loadPage: Done!');
+        console.log('-loadPage: Done!\n');
     }
 }
 
