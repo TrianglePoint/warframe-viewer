@@ -5,17 +5,25 @@ const url_link = {
     forum: 'https://forums.warframe.com/forum/3-pc-update-build-notes.xml/'
 };
 
-function parse_events(callback){
+function parse_events(isHtml, callback){
     crawlingContent(url_link.json,(data)=>{
         const obj = JSON.parse(data);
         console.log('--parsingContent: Number of "Events": ' + obj.Events.length);
-        let result = "";
+        let result;
+        if(isHtml){
+            result = "";
+        }else{
+            //JSON
+            result = [];
+        }
         for(let i = 0; i < obj.Events.length; i++){
             
             // Store the location of english and korean message.
             let en_ko = [-1, -1];
-            result += '<p><a href="' + obj.Events[i].Prop +
-                '" target="_blank">';
+            if(isHtml){
+                result += '<p><a href="' + obj.Events[i].Prop +
+                    '" target="_blank">';
+            }
             
             // Find english and korean message.
             for(let j = 0; j < obj.Events[i].Messages.length; j++){
@@ -36,18 +44,29 @@ function parse_events(callback){
             if(en_ko[0] == -1){
                 en_ko[0] = 0;
             }
-            result += obj.Events[i].Messages[en_ko[0]].Message +
-                '</a></p>';
+            if(isHtml){
+                result += obj.Events[i].Messages[en_ko[0]].Message +
+                    '</a></p>';
+            }else{
+                //JSON
+                result.push({subject:obj.Events[i].Messages[en_ko[0]].Message, link:obj.Events[i].Prop});
+            }
         }
         console.log('--parsingContent: Created event element.');
         return callback(result);
     });                             
 }
 
-function parse_update(cheerio, callback){
+function parse_update(isHtml, cheerio, callback){
     crawlingContent(url_link.forum, (body)=>{
         const $ = cheerio.load(body,{xmlMode: true});
-        let result = "";
+        let result;
+        if(isHtml){
+            result = "";
+        }else{
+            //JSON
+            result = [];
+        }
         // Number of display.
         let numUpdate = 5;
         console.log('--parsingContent: Number of find the update: ' + numUpdate);
@@ -58,7 +77,12 @@ function parse_update(cheerio, callback){
                 // End loop of .each()
                 return false;
             }
-            result += '<p><a href="' + $('link', this).text() + '" target="_blank">' + $('title', this).text() + '</a></p>';
+            if(isHtml){
+                result += '<p><a href="' + $('link', this).text() + '" target="_blank">' + $('title', this).text() + '</a></p>';
+            }else{
+                //JSON
+                result.push({subject: $('title', this).text(), link: $('link', this).text()});
+            }
             numUpdate--;
         });
         console.log('--parsingContent: Created update element.');
