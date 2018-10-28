@@ -15,12 +15,12 @@ function load_main(req, res){
         if(err) throw err;
         
         $ = cheerio.load(body,{xmlMode: true});
-        parsingContent.events((result)=>{
+        parsingContent.events(true, (result)=>{
             $('#div_events').html(result);
             count--;
             add_to_html(res);
         });
-        parsingContent.update(cheerio, (result)=>{
+        parsingContent.update(true, cheerio, (result)=>{
             $('#div_update').html(result);
             count--;
             add_to_html(res);
@@ -30,7 +30,7 @@ function load_main(req, res){
 
 function add_to_html(res){
     if(count == 0){
-        console.log('-loadPage: Write the result to main.html');
+        console.log('-loadPage: Write the result to /');
         res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
         res.write($.html());
         res.end();
