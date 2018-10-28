@@ -6,9 +6,10 @@ const parsingContent = require('./parsingContent');
 let $;
 
 // Number of will load content. if become 0, add content to html file.
-let count = 2;
+let count;
 
 function load_main(req, res){
+    count = 2;
     console.log('-loadPage: Load main.html');
     fs.readFile('./web/html/main.html', (err, body) => {
         if(err) throw err;
