@@ -6,6 +6,9 @@ const loadJson = require('./node/loadJson');
 
 let port = process.env.PORT;
 
+// Set static path.
+app.use(express.static(__dirname + '/web'));
+
 app.get('/', loadPage.main);
 app.get('/json', loadJson.main);
 app.listen(port, ()=>{
